@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#101418" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="부저 타이머" />
+    <title>부저 타이머</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./styles.css?v=8" />
+  </head>
+  <body>
+    <main class="app" aria-live="polite">
+      <section class="timer-panel" data-state="idle">
+        <section id="timerView" class="tab-view is-active" role="tabpanel" aria-labelledby="timerTab" data-tab-view="timer">
+          <button id="toggleButton" class="timer-face" type="button" aria-label="타이머 시작 또는 정지">
+            <span class="display-glass" aria-hidden="true"></span>
+            <span id="timeDisplay" class="time-display" aria-label="00:00.00"></span>
+            <span class="cable" aria-hidden="true"></span>
+          </button>
+
+          <div class="timer-meta">
+            <span id="stateBadge" class="state-badge">대기</span>
+            <span id="tapHint" class="tap-hint">부저 또는 Enter로 시작</span>
+          </div>
+
+          <div class="controls" role="group" aria-label="타이머 조작">
+            <button id="resetButton" class="control-button" type="button">초기화</button>
+            <button id="copyButton" class="control-button" type="button">시간 복사</button>
+            <button id="settingsTab" class="control-button tab-button" type="button" role="tab" aria-selected="false" aria-controls="settingsView" data-tab-target="settings">설정</button>
+            <button id="timerTab" class="tab-button sr-only is-active" type="button" role="tab" aria-selected="true" aria-controls="timerView" data-tab-target="timer">타이머</button>
+          </div>
+        </section>
+
+        <section id="settingsView" class="tab-view settings-view" role="tabpanel" aria-labelledby="settingsTab" data-tab-view="settings" hidden>
+          <div class="settings-header">
+            <h1>설정</h1>
+            <button class="text-button tab-button is-active" type="button" role="tab" aria-selected="false" aria-controls="timerView" data-tab-target="timer">타이머로 돌아가기</button>
+          </div>
+
+          <section class="status-grid" aria-label="타이머 상태">
+            <div>
+              <span>입력</span>
+              <strong>Enter / 화면 터치</strong>
+            </div>
+            <div>
+              <span>마지막 기록</span>
+              <strong id="lastTime">없음</strong>
+            </div>
+            <div>
+              <span>기록 수</span>
+              <strong id="stopCount">0회</strong>
+            </div>
+            <div>
+              <span>소리</span>
+              <button id="soundButton" class="inline-setting-button is-active" type="button" aria-pressed="true">켜짐</button>
+            </div>
+          </section>
+
+          <section class="history-section" aria-label="정지 기록">
+            <div class="section-title">
+              <h2>정지 기록</h2>
+              <button id="clearHistoryButton" class="text-button" type="button">비우기</button>
+            </div>
+            <ol id="historyList" class="history-list"></ol>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js?v=5"></script>
+  </body>
+</html>
