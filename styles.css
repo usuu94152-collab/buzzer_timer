@@ -39,7 +39,7 @@ button {
 }
 
 .timer-panel {
-  width: min(1120px, 100%);
+  width: min(1600px, 100%);
 }
 
 .tab-view[hidden],
@@ -55,9 +55,9 @@ button {
 
 .timer-face {
   position: relative;
-  width: min(980px, 92vw);
+  width: min(1600px, 98vw);
   aspect-ratio: 4.55 / 1;
-  min-height: 126px;
+  min-height: 180px;
   border: 0;
   border-radius: 5px;
   background:
@@ -118,10 +118,10 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(5px, 1.1vw, 16px);
-  padding: 0 clamp(20px, 4vw, 56px);
+  gap: clamp(6px, 1.4vw, 24px);
+  padding: 0 clamp(20px, 4vw, 64px);
   color: var(--led);
-  font-size: clamp(64px, 12.4vw, 160px);
+  font-size: clamp(88px, 17vw, 280px);
   line-height: 1;
   filter:
     drop-shadow(0 0 2px rgba(255, 38, 48, 0.96))
@@ -431,8 +431,8 @@ h2 {
   }
 
   .timer-face {
-    width: min(100%, 540px);
-    min-height: 92px;
+    width: 100%;
+    min-height: 116px;
   }
 
   .display-glass {
@@ -440,9 +440,9 @@ h2 {
   }
 
   .time-display {
-    padding: 0 18px;
-    font-size: clamp(52px, 15.3vw, 86px);
-    gap: clamp(4px, 0.9vw, 8px);
+    padding: 0 14px;
+    font-size: clamp(60px, 19vw, 120px);
+    gap: clamp(4px, 1vw, 10px);
   }
 
   .cable {
@@ -461,12 +461,12 @@ h2 {
   }
 
   .timer-face {
-    min-height: 86px;
+    min-height: 104px;
   }
 
   .time-display {
-    font-size: clamp(46px, 14.7vw, 62px);
-    padding: 0 14px;
+    font-size: clamp(54px, 18vw, 96px);
+    padding: 0 10px;
   }
 
   .control-button {
