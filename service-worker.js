@@ -1,8 +1,8 @@
-const CACHE_NAME = "buzzer-web-timer-v11";
+const CACHE_NAME = "buzzer-web-timer-v12";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=11",
+  "./styles.css?v=12",
   "./app.js?v=5",
   "./manifest.json",
   "./icon-192.png",
