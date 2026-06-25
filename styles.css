@@ -95,9 +95,8 @@ button {
   font-size: min(21vw, 60vh);
   line-height: 1;
   filter:
-    drop-shadow(0 0 2px rgba(255, 38, 48, 0.96))
-    drop-shadow(0 0 10px rgba(255, 38, 48, 0.78))
-    drop-shadow(0 0 22px rgba(255, 38, 48, 0.32));
+    drop-shadow(0 0 1px rgba(255, 38, 48, 0.55))
+    drop-shadow(0 0 4px rgba(255, 38, 48, 0.3));
 }
 
 .led-digit {
@@ -117,9 +116,8 @@ button {
 .segment.is-on {
   background: var(--led);
   box-shadow:
-    0 0 0.025em rgba(255, 255, 255, 0.8),
-    0 0 0.12em rgba(255, 38, 48, 0.95),
-    0 0 0.28em rgba(255, 38, 48, 0.54);
+    0 0 0.02em rgba(255, 255, 255, 0.45),
+    0 0 0.07em rgba(255, 38, 48, 0.5);
 }
 
 .segment.a,
@@ -188,9 +186,8 @@ button {
   border-radius: 50%;
   background: var(--led);
   box-shadow:
-    0 0 0.03em rgba(255, 255, 255, 0.8),
-    0 0 0.13em rgba(255, 38, 48, 0.98),
-    0 0 0.3em rgba(255, 38, 48, 0.62);
+    0 0 0.02em rgba(255, 255, 255, 0.45),
+    0 0 0.08em rgba(255, 38, 48, 0.5);
   transform: translateX(-50%);
 }
 
