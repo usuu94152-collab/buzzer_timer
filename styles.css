@@ -212,6 +212,7 @@ button {
   justify-content: center;
   gap: 12px;
   min-height: 28px;
+  margin-top: 40px;
 }
 
 .state-badge {
