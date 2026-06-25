@@ -1,8 +1,8 @@
-const CACHE_NAME = "buzzer-web-timer-v9";
+const CACHE_NAME = "buzzer-web-timer-v10";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=8",
+  "./styles.css?v=10",
   "./app.js?v=5",
   "./manifest.json",
   "./icon-192.png",
@@ -30,7 +30,14 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // 네트워크 우선: 항상 최신 버전을 받아오고, 오프라인일 때만 캐시 사용
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    fetch(event.request)
+      .then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
