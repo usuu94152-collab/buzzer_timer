@@ -27,7 +27,17 @@ function doGet() {
   return json({ error: "bad_request" });
 }
 
+// 오류가 그대로 새어 나가면 Apps Script 가 HTML 오류 페이지를 돌려주고
+// 앱에서는 "형식이 이상하다" 는 알아보기 힘든 메시지만 보인다.
 function doPost(request) {
+  try {
+    return handlePost(request);
+  } catch (error) {
+    return json({ error: String(error.message || error) });
+  }
+}
+
+function handlePost(request) {
   var body;
 
   try {
@@ -86,8 +96,29 @@ function json(payload) {
   return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(ContentService.MimeType.JSON);
 }
 
+/**
+ * 스프레드시트에서 확장 프로그램 > Apps Script 로 만든 프로젝트면 활성 문서가 잡힌다.
+ * script.google.com 에서 따로 만든 프로젝트라면 활성 문서가 없으므로
+ * 스크립트 속성 SPREADSHEET_ID 에 시트 주소의 /d/ 와 /edit 사이 값을 넣어야 한다.
+ */
+function getSpreadsheet() {
+  var active = SpreadsheetApp.getActiveSpreadsheet();
+
+  if (active) {
+    return active;
+  }
+
+  var id = PropertiesService.getScriptProperties().getProperty("SPREADSHEET_ID");
+
+  if (!id) {
+    throw new Error("스크립트 속성에 SPREADSHEET_ID 를 넣어 주세요.");
+  }
+
+  return SpreadsheetApp.openById(id);
+}
+
 function getSheet(name, header) {
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var spreadsheet = getSpreadsheet();
   var sheet = spreadsheet.getSheetByName(name);
 
   if (!sheet) {
