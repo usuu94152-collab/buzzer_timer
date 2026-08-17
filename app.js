@@ -1,12 +1,3 @@
-import { formatElapsed } from "./src/format.js";
-import { initRoster, render as renderRoster } from "./src/roster.js";
-import { initMeasure, render as renderMeasure, canRecordElapsed, isMeasureActive, recordElapsed } from "./src/measure.js";
-import { initPortfolio, render as renderPortfolio } from "./src/portfolio.js";
-import { initSettings, render as renderSettings } from "./src/settings.js";
-import { initSync } from "./src/sync.js";
-
-const TYPING_TAGS = ["INPUT", "TEXTAREA", "SELECT", "BUTTON"];
-
 const elements = {
   panel: document.querySelector(".timer-panel"),
   timeDisplay: document.querySelector("#timeDisplay"),
@@ -34,7 +25,6 @@ const state = {
   history: [],
   rafId: 0,
   audioContext: null,
-  activeTab: "timer",
 };
 
 const DIGIT_SEGMENTS = {
@@ -59,6 +49,26 @@ function currentElapsed() {
     return state.elapsedBeforeStart;
   }
   return state.elapsedBeforeStart + now() - state.startedAt;
+}
+
+function formatElapsed(milliseconds) {
+  const totalCentiseconds = Math.floor(milliseconds / 10);
+  const centiseconds = totalCentiseconds % 100;
+  const totalSeconds = Math.floor(totalCentiseconds / 100);
+  const seconds = totalSeconds % 60;
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const minutes = totalMinutes % 60;
+  const hours = Math.floor(totalMinutes / 60);
+
+  if (hours > 0) {
+    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}.${pad(centiseconds)}`;
+  }
+
+  return `${pad(totalMinutes)}:${pad(seconds)}.${pad(centiseconds)}`;
+}
+
+function pad(value) {
+  return String(value).padStart(2, "0");
 }
 
 function updateDisplay() {
@@ -155,15 +165,7 @@ function toggleTimer(inputSource = "button") {
     addHistory(state.elapsedBeforeStart);
     setMode("paused");
     playTone(220, 0.08);
-
-    if (canRecordElapsed()) {
-      recordElapsed(state.elapsedBeforeStart);
-    }
   } else {
-    // 측정 모드에서는 학생마다 0 에서 다시 재는 것이지, 직전 기록을 이어가는 게 아니다.
-    if (isMeasureActive()) {
-      state.elapsedBeforeStart = 0;
-    }
     state.startedAt = now();
     state.running = true;
     setMode("running");
@@ -184,7 +186,7 @@ function resetTimer() {
   updateDisplay();
 }
 
-async function showTab(name) {
+function showTab(name) {
   elements.tabButtons.forEach((button) => {
     const isActive = button.dataset.tabTarget === name;
     button.classList.toggle("is-active", isActive);
@@ -196,25 +198,6 @@ async function showTab(name) {
     view.classList.toggle("is-active", isActive);
     view.hidden = !isActive;
   });
-
-  state.activeTab = name;
-
-  if (name === "roster") {
-    await renderRoster();
-    return;
-  }
-
-  if (name === "records") {
-    await renderPortfolio();
-    return;
-  }
-
-  // 설정 탭의 종목 목록도 measure 모듈이 그린다.
-  await renderMeasure();
-
-  if (name === "settings") {
-    await renderSettings();
-  }
 }
 
 async function copyTime() {
@@ -298,49 +281,13 @@ function playTone(frequency, durationSeconds) {
   oscillator.stop(start + durationSeconds + 0.02);
 }
 
-// 명렬 입력 중 Enter 는 폼 제출이어야 한다. 부저는 타이머 화면에서만 받는다.
 function onKeyDown(event) {
-  if (event.key !== "Enter" || state.activeTab !== "timer") {
-    return;
-  }
-
-  if (event.target instanceof HTMLElement && TYPING_TAGS.includes(event.target.tagName)) {
+  if (event.key !== "Enter") {
     return;
   }
 
   event.preventDefault();
   toggleTimer("enter");
-}
-
-// 입력칸에서 Enter 로 제출하는 동작을 브라우저 기본 동작에 맡기지 않는다.
-// 이 앱의 주 입력이 Enter 라 확실하게 한 번만 제출되어야 한다.
-// preventDefault 로 암묵적 제출을 막고 requestSubmit 으로 직접 보낸다.
-function submitFormOnEnter(event) {
-  if (event.key !== "Enter" || !(event.target instanceof HTMLInputElement)) {
-    return;
-  }
-
-  const form = event.target.form;
-  if (!form) {
-    return;
-  }
-
-  event.preventDefault();
-  form.requestSubmit();
-}
-
-// 부저는 Enter 로 들어온다. 눌렀던 버튼에 포커스가 남아 있으면
-// 다음 부저 입력이 타이머가 아니라 그 버튼을 다시 누른다.
-// detail 이 0 이면 키보드로 활성화한 것이므로 포커스를 건드리지 않는다.
-function releaseFocusAfterPointerClick(event) {
-  if (event.detail === 0 || !(event.target instanceof Element)) {
-    return;
-  }
-
-  const button = event.target.closest("button");
-  if (button) {
-    button.blur();
-  }
 }
 
 function registerServiceWorker() {
@@ -362,17 +309,9 @@ elements.tabButtons.forEach((button) => {
   button.addEventListener("click", () => showTab(button.dataset.tabTarget));
 });
 window.addEventListener("keydown", onKeyDown);
-document.addEventListener("keydown", submitFormOnEnter);
-document.addEventListener("click", releaseFocusAfterPointerClick);
 
-initRoster();
-initMeasure();
-initPortfolio();
-initSettings();
-initSync();
-
+showTab("timer");
 setMode("idle");
 renderHistory();
 updateDisplay();
-showTab("timer");
 registerServiceWorker();
