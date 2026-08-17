@@ -17,6 +17,11 @@
   box-sizing: border-box;
 }
 
+/* display 를 지정한 클래스가 hidden 속성의 display:none 을 덮어쓴다. */
+[hidden] {
+  display: none !important;
+}
+
 html,
 body {
   min-height: 100%;
@@ -435,11 +440,18 @@ h2 {
 
 /* --- 탭 바 --- */
 
+/* 타이머 화면이 뷰포트를 꽉 채우므로 고정하지 않으면 탭 바가 접힌 선 아래로 밀린다. */
 .tab-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
   display: flex;
   justify-content: center;
   gap: 6px;
   margin-top: 18px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: var(--page);
 }
 
 .tab-button {
