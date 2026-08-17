@@ -1,9 +1,14 @@
-const CACHE_NAME = "buzzer-web-timer-v13";
+const CACHE_NAME = "buzzer-web-timer-v14";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=13",
-  "./app.js?v=5",
+  "./styles.css?v=14",
+  "./app.js?v=6",
+  "./src/format.js",
+  "./src/store.js",
+  "./src/roster.js",
+  "./src/measure.js",
+  "./src/portfolio.js",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"
@@ -27,6 +32,11 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") {
+    return;
+  }
+
+  // 앱 파일만 캐시한다. 외부 응답까지 캐시하면 오래된 데이터를 계속 돌려주게 된다.
+  if (new URL(event.request.url).origin !== self.location.origin) {
     return;
   }
 
