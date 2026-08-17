@@ -1,4 +1,5 @@
 import { listStudents, saveStudent, deleteStudent } from "./store.js";
+import { getConfig } from "./sync.js";
 
 const elements = {};
 let editingStudent = null;
@@ -42,17 +43,44 @@ function setEditing(student) {
   }
 }
 
+async function copyStudentLink(student) {
+  const backendUrl = getConfig().url;
+
+  if (!backendUrl) {
+    elements.hint.textContent = "설정 탭에서 웹앱 주소를 먼저 입력해야 학생 링크를 만들 수 있습니다.";
+    return;
+  }
+
+  // 웹앱 주소를 링크에 실어 보낸다. 공개 저장소에 주소를 커밋하지 않기 위해서다.
+  const query = `s=${student.token}&api=${encodeURIComponent(backendUrl)}`;
+  const link = new URL(`student.html?${query}`, location.href).href;
+
+  try {
+    await navigator.clipboard.writeText(link);
+    elements.hint.textContent = `${student.name} 링크를 복사했습니다.`;
+  } catch {
+    // http 로 열면 clipboard 를 못 쓴다. 직접 복사하도록 보여준다.
+    prompt(`${student.name} 조회 링크`, link);
+  }
+}
+
 function createRow(student) {
   const item = document.createElement("li");
   const label = document.createElement("span");
   const name = document.createElement("strong");
   const actions = document.createElement("span");
+  const linkButton = document.createElement("button");
   const editButton = document.createElement("button");
   const removeButton = document.createElement("button");
 
   label.className = "row-label";
   label.textContent = `${student.classNo} ${student.number}번`;
   name.textContent = student.name;
+
+  linkButton.type = "button";
+  linkButton.className = "text-button compact";
+  linkButton.textContent = "링크";
+  linkButton.addEventListener("click", () => copyStudentLink(student));
 
   editButton.type = "button";
   editButton.className = "text-button compact";
@@ -74,7 +102,7 @@ function createRow(student) {
   });
 
   actions.className = "row-actions";
-  actions.append(editButton, removeButton);
+  actions.append(linkButton, editButton, removeButton);
   item.append(label, name, actions);
 
   return item;

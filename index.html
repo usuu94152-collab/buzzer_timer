@@ -152,6 +152,25 @@
             <ul id="eventList" class="data-list"></ul>
           </section>
 
+          <section class="history-section" aria-label="Google 시트 연동">
+            <div class="section-title">
+              <h2>Google 시트 연동</h2>
+              <span id="syncPending" class="row-label"></span>
+            </div>
+
+            <form id="syncForm" class="inline-form">
+              <input id="syncUrl" type="url" placeholder="웹앱 /exec 주소" autocomplete="off" />
+              <input id="syncKey" type="password" placeholder="API 키" autocomplete="off" />
+              <button class="control-button" type="submit">저장</button>
+            </form>
+
+            <div class="measure-actions">
+              <span id="syncHint" class="hint"></span>
+              <button id="syncPull" class="text-button" type="button">시트에서 명렬 가져오기</button>
+              <button id="syncPush" class="control-button" type="button">지금 동기화</button>
+            </div>
+          </section>
+
           <section class="history-section" aria-label="정지 기록">
             <div class="section-title">
               <h2>정지 기록</h2>

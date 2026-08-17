@@ -141,7 +141,35 @@ function deleteByIndex(transaction, storeName, indexName, key) {
   };
 }
 
+// 로컬에서 지운 것을 시트에서도 지우려면 무엇을 지웠는지 기억해야 한다.
+// 다음 동기화 때 함께 보내고 성공하면 비운다.
+const TOMBSTONE_KEYS = {
+  [STUDENTS]: "sync.deleted.students",
+  [EVENTS]: "sync.deleted.events",
+  [RECORDS]: "sync.deleted.records",
+};
+
+function rememberDeletion(storeName, id) {
+  const key = TOMBSTONE_KEYS[storeName];
+  const ids = new Set(JSON.parse(localStorage.getItem(key) || "[]"));
+  ids.add(id);
+  localStorage.setItem(key, JSON.stringify([...ids]));
+}
+
+export function listDeletions() {
+  return {
+    students: JSON.parse(localStorage.getItem(TOMBSTONE_KEYS[STUDENTS]) || "[]"),
+    events: JSON.parse(localStorage.getItem(TOMBSTONE_KEYS[EVENTS]) || "[]"),
+    records: JSON.parse(localStorage.getItem(TOMBSTONE_KEYS[RECORDS]) || "[]"),
+  };
+}
+
+export function clearDeletions() {
+  Object.values(TOMBSTONE_KEYS).forEach((key) => localStorage.removeItem(key));
+}
+
 export function deleteStudent(studentId) {
+  rememberDeletion(STUDENTS, studentId);
   return runTransaction([STUDENTS, RECORDS], "readwrite", (transaction) => {
     transaction.objectStore(STUDENTS).delete(studentId);
     deleteByIndex(transaction, RECORDS, "by_student", studentId);
@@ -174,6 +202,7 @@ export async function saveEvent(input) {
 }
 
 export function deleteEvent(eventId) {
+  rememberDeletion(EVENTS, eventId);
   return runTransaction([EVENTS, RECORDS], "readwrite", (transaction) => {
     transaction.objectStore(EVENTS).delete(eventId);
     deleteByIndex(transaction, RECORDS, "by_event", eventId);
@@ -209,9 +238,47 @@ export async function addRecord({ studentId, eventId, value, note = "" }) {
 }
 
 export function deleteRecord(recordId) {
+  rememberDeletion(RECORDS, recordId);
   return runTransaction(RECORDS, "readwrite", (transaction) =>
     transaction.objectStore(RECORDS).delete(recordId)
   );
+}
+
+// 저장 함수들이 syncedAt 없는 객체를 새로 만들기 때문에
+// 수정된 항목은 자동으로 다시 미동기화 상태가 된다.
+export async function listUnsynced() {
+  const [students, events, records] = await Promise.all([listStudents(), listEvents(), listRecords()]);
+
+  return {
+    students: students.filter((item) => !item.syncedAt),
+    events: events.filter((item) => !item.syncedAt),
+    records: records.filter((item) => !item.syncedAt),
+  };
+}
+
+export async function markSynced({ students = [], events = [], records = [] }) {
+  const syncedAt = new Date().toISOString();
+  const groups = [
+    [STUDENTS, students],
+    [EVENTS, events],
+    [RECORDS, records],
+  ].filter(([, items]) => items.length > 0);
+
+  for (const [storeName, items] of groups) {
+    await runTransaction(storeName, "readwrite", (transaction) => {
+      const objectStore = transaction.objectStore(storeName);
+      items.forEach((item) => objectStore.put({ ...item, syncedAt }));
+    });
+  }
+}
+
+export async function replaceRoster({ students = [], events = [] }) {
+  await runTransaction([STUDENTS, EVENTS], "readwrite", (transaction) => {
+    const studentStore = transaction.objectStore(STUDENTS);
+    const eventStore = transaction.objectStore(EVENTS);
+    students.forEach((student) => studentStore.put({ ...student, syncedAt: new Date().toISOString() }));
+    events.forEach((event) => eventStore.put({ ...event, syncedAt: new Date().toISOString() }));
+  });
 }
 
 export function isBetter(candidate, current, direction) {

@@ -2,6 +2,7 @@ const CACHE_NAME = "buzzer-web-timer-v14";
 const ASSETS = [
   "./",
   "./index.html",
+  "./student.html",
   "./styles.css?v=14",
   "./app.js?v=6",
   "./src/format.js",
@@ -9,6 +10,9 @@ const ASSETS = [
   "./src/roster.js",
   "./src/measure.js",
   "./src/portfolio.js",
+  "./src/settings.js",
+  "./src/sync.js",
+  "./src/student.js",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"

@@ -2,6 +2,8 @@ import { formatElapsed } from "./src/format.js";
 import { initRoster, render as renderRoster } from "./src/roster.js";
 import { initMeasure, render as renderMeasure, canRecordElapsed, isMeasureActive, recordElapsed } from "./src/measure.js";
 import { initPortfolio, render as renderPortfolio } from "./src/portfolio.js";
+import { initSettings, render as renderSettings } from "./src/settings.js";
+import { initSync } from "./src/sync.js";
 
 const TYPING_TAGS = ["INPUT", "TEXTAREA", "SELECT", "BUTTON"];
 
@@ -209,6 +211,10 @@ async function showTab(name) {
 
   // 설정 탭의 종목 목록도 measure 모듈이 그린다.
   await renderMeasure();
+
+  if (name === "settings") {
+    await renderSettings();
+  }
 }
 
 async function copyTime() {
@@ -362,6 +368,8 @@ document.addEventListener("click", releaseFocusAfterPointerClick);
 initRoster();
 initMeasure();
 initPortfolio();
+initSettings();
+initSync();
 
 setMode("idle");
 renderHistory();

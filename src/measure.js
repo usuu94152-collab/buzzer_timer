@@ -1,5 +1,6 @@
 import { listEvents, listStudents, listRecords, addRecord, saveEvent, deleteEvent } from "./store.js";
 import { formatValue, parseValueInput, UNIT_LABELS } from "./format.js";
+import { pushInBackground } from "./sync.js";
 
 const EVENT_KEY = "measure.eventId";
 const CLASS_KEY = "measure.classNo";
@@ -48,6 +49,7 @@ export async function recordElapsed(milliseconds) {
   await addRecord({ studentId: student.id, eventId: state.eventId, value: Math.round(milliseconds) });
   advance();
   await render();
+  pushInBackground();
 }
 
 function advance() {
@@ -247,6 +249,7 @@ async function onManualSubmit(submitEvent) {
   advance();
   await render();
   elements.manualValue.focus();
+  pushInBackground();
 }
 
 async function onEventSubmit(submitEvent) {
