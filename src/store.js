@@ -1,5 +1,5 @@
 const DB_NAME = "buzzer-timer";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STUDENTS = "students";
 const EVENTS = "events";
 const RECORDS = "records";
@@ -8,14 +8,18 @@ const ID_BYTE_LENGTH = 8;
 // 학생 조회 링크의 유일한 방어선이므로 무차별 대입이 불가능한 길이로 둔다.
 const TOKEN_BYTE_LENGTH = 16;
 
+// ID 를 무작위로 만들면 기기마다 다른 종목이 되어 시트에 6개씩 쌓인다.
+// 기본 종목은 모든 기기에서 같은 행을 가리켜야 하므로 ID 를 고정한다.
 const DEFAULT_EVENTS = [
-  { name: "50m 달리기", unit: "ms", direction: "lower" },
-  { name: "오래달리기-걷기", unit: "ms", direction: "lower" },
-  { name: "왕복오래달리기", unit: "count", direction: "higher" },
-  { name: "제자리멀리뛰기", unit: "cm", direction: "higher" },
-  { name: "윗몸말아올리기", unit: "count", direction: "higher" },
-  { name: "앉아윗몸앞으로굽히기", unit: "cm", direction: "higher" },
+  { id: "preset-run50m", name: "50m 달리기", unit: "ms", direction: "lower" },
+  { id: "preset-endurance", name: "오래달리기-걷기", unit: "ms", direction: "lower" },
+  { id: "preset-shuttle", name: "왕복오래달리기", unit: "count", direction: "higher" },
+  { id: "preset-longjump", name: "제자리멀리뛰기", unit: "cm", direction: "higher" },
+  { id: "preset-situp", name: "윗몸말아올리기", unit: "count", direction: "higher" },
+  { id: "preset-sitreach", name: "앉아윗몸앞으로굽히기", unit: "cm", direction: "higher" },
 ];
+
+const PRESET_NAMES = new Set(DEFAULT_EVENTS.map((event) => event.name));
 
 let databasePromise = null;
 
@@ -34,17 +38,42 @@ function createId() {
   return randomHex(ID_BYTE_LENGTH);
 }
 
-function createSchema(database) {
+function seedPresets(store) {
+  DEFAULT_EVENTS.forEach((event, index) => {
+    store.put({ ...event, order: index });
+  });
+}
+
+// v1 에서 만들어진 기본 종목은 ID 가 기기마다 달라 중복의 원인이 된다.
+// 이름이 같은 기본 종목만 지우고 고정 ID 로 다시 넣는다. 직접 추가한 종목은 남긴다.
+function replaceRandomPresets(store) {
+  const cursorRequest = store.openCursor();
+
+  cursorRequest.onsuccess = () => {
+    const cursor = cursorRequest.result;
+
+    if (!cursor) {
+      seedPresets(store);
+      return;
+    }
+
+    if (PRESET_NAMES.has(cursor.value.name)) {
+      cursor.delete();
+    }
+    cursor.continue();
+  };
+}
+
+function createSchema(database, transaction) {
   if (!database.objectStoreNames.contains(STUDENTS)) {
     const students = database.createObjectStore(STUDENTS, { keyPath: "id" });
     students.createIndex("by_class", "classNo");
   }
 
-  if (!database.objectStoreNames.contains(EVENTS)) {
-    const events = database.createObjectStore(EVENTS, { keyPath: "id" });
-    DEFAULT_EVENTS.forEach((event, index) => {
-      events.add({ ...event, id: createId(), order: index });
-    });
+  if (database.objectStoreNames.contains(EVENTS)) {
+    replaceRandomPresets(transaction.objectStore(EVENTS));
+  } else {
+    seedPresets(database.createObjectStore(EVENTS, { keyPath: "id" }));
   }
 
   if (!database.objectStoreNames.contains(RECORDS)) {
@@ -61,7 +90,7 @@ function openDatabase() {
 
   databasePromise = new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = () => createSchema(request.result);
+    request.onupgradeneeded = () => createSchema(request.result, request.transaction);
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
