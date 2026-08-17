@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-title" content="부저 타이머" />
     <title>부저 타이머</title>
     <link rel="manifest" href="./manifest.json" />
-    <link rel="stylesheet" href="./styles.css?v=8" />
+    <link rel="stylesheet" href="./styles.css?v=9" />
   </head>
   <body>
     <main class="app" aria-live="polite">
@@ -25,18 +25,90 @@
             <span id="tapHint" class="tap-hint">부저 또는 Enter로 시작</span>
           </div>
 
+          <div class="measure-bar">
+            <select id="measureEvent" aria-label="종목 선택"></select>
+            <select id="measureClass" aria-label="반 선택"></select>
+            <button id="measureToggle" class="control-button" type="button">측정 시작</button>
+          </div>
+
+          <div id="measurePanel" class="measure-panel" hidden>
+            <div class="measure-current">
+              <span id="measureCurrentLabel" class="row-label"></span>
+              <strong id="measureCurrentName">-</strong>
+              <span id="measureNextName" class="hint"></span>
+            </div>
+
+            <p id="measureTimedHint" class="hint">부저를 누르면 시작, 다시 누르면 이 학생 기록으로 저장하고 다음 학생으로 넘어갑니다.</p>
+
+            <form id="manualForm" class="inline-form" hidden>
+              <input id="manualValue" type="number" step="any" min="0" inputmode="decimal" />
+              <button class="control-button" type="submit">기록 저장</button>
+            </form>
+
+            <div class="measure-actions">
+              <button id="measureBack" class="text-button" type="button">이전 학생</button>
+              <button id="measureSkip" class="text-button" type="button">건너뛰기</button>
+            </div>
+
+            <ol id="measureQueue" class="queue-list"></ol>
+          </div>
+
           <div class="controls" role="group" aria-label="타이머 조작">
             <button id="resetButton" class="control-button" type="button">초기화</button>
             <button id="copyButton" class="control-button" type="button">시간 복사</button>
-            <button id="settingsTab" class="control-button tab-button" type="button" role="tab" aria-selected="false" aria-controls="settingsView" data-tab-target="settings">설정</button>
-            <button id="timerTab" class="tab-button sr-only is-active" type="button" role="tab" aria-selected="true" aria-controls="timerView" data-tab-target="timer">타이머</button>
           </div>
         </section>
 
-        <section id="settingsView" class="tab-view settings-view" role="tabpanel" aria-labelledby="settingsTab" data-tab-view="settings" hidden>
+        <section id="rosterView" class="tab-view panel-view" role="tabpanel" aria-labelledby="rosterTab" data-tab-view="roster" hidden>
+          <div class="settings-header">
+            <h1>명렬</h1>
+            <span id="studentCount" class="row-label">0명</span>
+          </div>
+
+          <form id="studentForm" class="inline-form">
+            <input id="studentClass" type="text" placeholder="반 (예: 3-2)" autocomplete="off" required />
+            <input id="studentNumber" type="number" placeholder="번호" min="1" required />
+            <input id="studentName" type="text" placeholder="이름" autocomplete="off" required />
+            <button id="studentSubmit" class="control-button" type="submit">추가</button>
+            <button id="studentCancel" class="text-button" type="button" hidden>취소</button>
+          </form>
+          <p id="studentHint" class="hint"></p>
+
+          <div class="section-title">
+            <h2>학생 목록</h2>
+            <button id="importToggle" class="text-button" type="button">붙여넣기로 추가</button>
+          </div>
+
+          <div id="importBox" class="import-box" hidden>
+            <textarea id="importText" rows="6" placeholder="한 줄에 한 명씩 · 반,번호,이름&#10;3-2,1,홍길동&#10;3-2,2,김철수&#10;엑셀에서 세 열을 복사해 붙여넣어도 됩니다."></textarea>
+            <div class="measure-actions">
+              <span id="importHint" class="hint"></span>
+              <button id="importButton" class="control-button" type="button">가져오기</button>
+            </div>
+          </div>
+
+          <p id="studentEmpty" class="hint" hidden>등록된 학생이 없습니다.</p>
+          <ul id="studentList" class="data-list"></ul>
+        </section>
+
+        <section id="recordsView" class="tab-view panel-view" role="tabpanel" aria-labelledby="recordsTab" data-tab-view="records" hidden>
+          <div class="settings-header">
+            <h1>기록</h1>
+            <button id="exportCsv" class="text-button" type="button">CSV 내보내기</button>
+          </div>
+
+          <div class="measure-bar">
+            <select id="portfolioClass" aria-label="반 선택"></select>
+            <select id="portfolioStudent" aria-label="학생 선택"></select>
+          </div>
+
+          <p id="portfolioEmpty" class="hint" hidden></p>
+          <div id="portfolioCards" class="card-grid"></div>
+        </section>
+
+        <section id="settingsView" class="tab-view panel-view" role="tabpanel" aria-labelledby="settingsTab" data-tab-view="settings" hidden>
           <div class="settings-header">
             <h1>설정</h1>
-            <button class="text-button tab-button is-active" type="button" role="tab" aria-selected="false" aria-controls="timerView" data-tab-target="timer">타이머로 돌아가기</button>
           </div>
 
           <section class="status-grid" aria-label="타이머 상태">
@@ -58,6 +130,47 @@
             </div>
           </section>
 
+          <section class="history-section" aria-label="종목 관리">
+            <div class="section-title">
+              <h2>종목</h2>
+            </div>
+
+            <form id="eventForm" class="inline-form">
+              <input id="eventName" type="text" placeholder="종목 이름" autocomplete="off" required />
+              <select id="eventUnit" aria-label="단위">
+                <option value="ms">시간</option>
+                <option value="count">횟수</option>
+                <option value="cm">길이(cm)</option>
+              </select>
+              <select id="eventDirection" aria-label="평가 방향">
+                <option value="lower">낮을수록 좋음</option>
+                <option value="higher">높을수록 좋음</option>
+              </select>
+              <button class="control-button" type="submit">종목 추가</button>
+            </form>
+
+            <ul id="eventList" class="data-list"></ul>
+          </section>
+
+          <section class="history-section" aria-label="Google 시트 연동">
+            <div class="section-title">
+              <h2>Google 시트 연동</h2>
+              <span id="syncPending" class="row-label"></span>
+            </div>
+
+            <form id="syncForm" class="inline-form">
+              <input id="syncUrl" type="url" placeholder="웹앱 /exec 주소" autocomplete="off" />
+              <input id="syncKey" type="password" placeholder="API 키" autocomplete="off" />
+              <button class="control-button" type="submit">저장</button>
+            </form>
+
+            <div class="measure-actions">
+              <span id="syncHint" class="hint"></span>
+              <button id="syncPull" class="text-button" type="button">시트에서 명렬 가져오기</button>
+              <button id="syncPush" class="control-button" type="button">지금 동기화</button>
+            </div>
+          </section>
+
           <section class="history-section" aria-label="정지 기록">
             <div class="section-title">
               <h2>정지 기록</h2>
@@ -66,9 +179,16 @@
             <ol id="historyList" class="history-list"></ol>
           </section>
         </section>
+
+        <nav class="tab-bar" role="tablist" aria-label="화면 전환">
+          <button id="timerTab" class="tab-button is-active" type="button" role="tab" aria-selected="true" aria-controls="timerView" data-tab-target="timer">타이머</button>
+          <button id="rosterTab" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="rosterView" data-tab-target="roster">명렬</button>
+          <button id="recordsTab" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="recordsView" data-tab-target="records">기록</button>
+          <button id="settingsTab" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="settingsView" data-tab-target="settings">설정</button>
+        </nav>
       </section>
     </main>
 
-    <script src="./app.js?v=5"></script>
+    <script type="module" src="./app.js?v=6"></script>
   </body>
 </html>

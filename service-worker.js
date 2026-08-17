@@ -1,9 +1,18 @@
-const CACHE_NAME = "buzzer-web-timer-v9";
+const CACHE_NAME = "buzzer-web-timer-v11";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=8",
-  "./app.js?v=5",
+  "./student.html",
+  "./styles.css?v=9",
+  "./app.js?v=6",
+  "./src/format.js",
+  "./src/store.js",
+  "./src/roster.js",
+  "./src/measure.js",
+  "./src/portfolio.js",
+  "./src/settings.js",
+  "./src/sync.js",
+  "./src/student.js",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"
@@ -25,12 +34,36 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
+
+  const fromNetwork = fetch(request)
+    .then((response) => {
+      if (response.ok) {
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch((error) => {
+      if (cached) {
+        return cached;
+      }
+      throw error;
+    });
+
+  return cached || fromNetwork;
+}
+
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
-  );
+  // 앱 파일만 캐시한다. 외부 응답까지 캐시하면 오래된 데이터를 계속 돌려주게 된다.
+  if (new URL(event.request.url).origin !== self.location.origin) {
+    return;
+  }
+
+  event.respondWith(staleWhileRevalidate(event.request));
 });
