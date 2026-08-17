@@ -97,24 +97,25 @@ function json(payload) {
 }
 
 /**
- * 스프레드시트에서 확장 프로그램 > Apps Script 로 만든 프로젝트면 활성 문서가 잡힌다.
- * script.google.com 에서 따로 만든 프로젝트라면 활성 문서가 없으므로
- * 스크립트 속성 SPREADSHEET_ID 에 시트 주소의 /d/ 와 /edit 사이 값을 넣어야 한다.
+ * SPREADSHEET_ID 속성이 있으면 무조건 그 시트를 쓴다.
+ * 활성 문서를 먼저 보면 안 된다. 스크립트가 예전에 다른 시트에 묶여 있던 경우
+ * 지정한 시트를 무시하고 엉뚱한 시트에 조용히 기록한다.
+ * 속성이 없을 때만 활성 문서로 넘어간다.
  */
 function getSpreadsheet() {
-  var active = SpreadsheetApp.getActiveSpreadsheet();
-
-  if (active) {
-    return active;
-  }
-
   var id = PropertiesService.getScriptProperties().getProperty("SPREADSHEET_ID");
 
-  if (!id) {
+  if (id) {
+    return SpreadsheetApp.openById(id);
+  }
+
+  var active = SpreadsheetApp.getActiveSpreadsheet();
+
+  if (!active) {
     throw new Error("스크립트 속성에 SPREADSHEET_ID 를 넣어 주세요.");
   }
 
-  return SpreadsheetApp.openById(id);
+  return active;
 }
 
 function getSheet(name, header) {
