@@ -1,4 +1,4 @@
-const CACHE_NAME = "buzzer-web-timer-v17";
+const CACHE_NAME = "buzzer-web-timer-v18";
 
 // GitHub Pages 는 모든 파일을 Cache-Control: max-age=600 으로 준다.
 // 그래서 파일 이름이 그대로면 배포 후 10 분 동안 브라우저가 옛 파일을 계속 쓴다.
@@ -9,16 +9,16 @@ const ASSETS = [
   "./",
   "./index.html",
   "./student.html",
-  "./styles.css?v=17",
-  "./app.js?v=17",
-  "./src/format.js?v=17",
-  "./src/store.js?v=17",
-  "./src/roster.js?v=17",
-  "./src/measure.js?v=17",
-  "./src/portfolio.js?v=17",
-  "./src/settings.js?v=17",
-  "./src/sync.js?v=17",
-  "./src/student.js?v=17",
+  "./styles.css?v=18",
+  "./app.js?v=18",
+  "./src/format.js?v=18",
+  "./src/store.js?v=18",
+  "./src/roster.js?v=18",
+  "./src/measure.js?v=18",
+  "./src/portfolio.js?v=18",
+  "./src/settings.js?v=18",
+  "./src/sync.js?v=18",
+  "./src/student.js?v=18",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"
@@ -50,9 +50,16 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 네트워크 우선: 항상 최신 버전을 받아오고, 오프라인일 때만 캐시 사용
+  // 네트워크 우선: 항상 최신 버전을 받아오고, 오프라인일 때만 캐시 사용.
+  //
+  // cache: "no-cache" 가 없으면 network-first 라는 말이 무색해진다.
+  // GitHub Pages 가 max-age=600 을 주기 때문에 그냥 fetch 하면 브라우저
+  // HTTP 캐시가 10 분 동안 옛 index.html 을 그대로 돌려준다. 홈 화면에
+  // 설치한 앱이 배포 후에도 한참 옛 화면을 띄우는 이유가 이것이다.
+  // no-cache 는 캐시를 버리는 게 아니라 서버에 물어보게 하는 것이라
+  // 안 바뀌었으면 304 로 끝나 비용도 거의 없다.
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: "no-cache" })
       .then((response) => {
         const copy = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));

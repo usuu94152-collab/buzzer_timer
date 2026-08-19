@@ -1,4 +1,4 @@
-import { listUnsynced, markSynced, listDeletions, clearDeletions, replaceRoster } from "./store.js?v=17";
+import { listUnsynced, markSynced, listDeletions, clearDeletions, replaceRoster } from "./store.js?v=18";
 
 const URL_KEY = "sync.url";
 const KEY_KEY = "sync.key";

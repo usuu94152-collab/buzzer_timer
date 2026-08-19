@@ -1,4 +1,4 @@
-import { formatValue, formatDate } from "./format.js?v=17";
+import { formatValue, formatDate } from "./format.js?v=18";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const CHART_WIDTH = 300;
