@@ -1,4 +1,4 @@
-import { getConfig, setConfig, isConfigured, push, pullRoster, countPending } from "./sync.js";
+import { getConfig, setConfig, isConfigured, push, pullRoster, countPending } from "./sync.js?v=17";
 
 const elements = {};
 

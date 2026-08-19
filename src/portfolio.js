@@ -1,5 +1,5 @@
-import { listStudents, listEvents, listRecords, deleteRecord, bestValue, isBetter } from "./store.js";
-import { formatValue, formatDate } from "./format.js";
+import { listStudents, listEvents, listRecords, deleteRecord, bestValue, isBetter } from "./store.js?v=17";
+import { formatValue, formatDate } from "./format.js?v=17";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const CHART_WIDTH = 300;

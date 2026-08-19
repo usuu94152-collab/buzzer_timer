@@ -1,18 +1,24 @@
-const CACHE_NAME = "buzzer-web-timer-v16";
+const CACHE_NAME = "buzzer-web-timer-v17";
+
+// GitHub Pages 는 모든 파일을 Cache-Control: max-age=600 으로 준다.
+// 그래서 파일 이름이 그대로면 배포 후 10 분 동안 브라우저가 옛 파일을 계속 쓴다.
+// index.html 만 새것이고 src 모듈이 옛것이면 import 가 깨져 앱이 통째로 죽는다.
+// 모든 모듈 URL 에 같은 ?v= 를 달아 배포마다 새 주소가 되게 한다.
+// 배포할 때는 이 숫자와 아래 목록, index.html·student.html·각 import 문을 함께 올린다.
 const ASSETS = [
   "./",
   "./index.html",
   "./student.html",
-  "./styles.css?v=16",
-  "./app.js?v=7",
-  "./src/format.js",
-  "./src/store.js",
-  "./src/roster.js",
-  "./src/measure.js",
-  "./src/portfolio.js",
-  "./src/settings.js",
-  "./src/sync.js",
-  "./src/student.js",
+  "./styles.css?v=17",
+  "./app.js?v=17",
+  "./src/format.js?v=17",
+  "./src/store.js?v=17",
+  "./src/roster.js?v=17",
+  "./src/measure.js?v=17",
+  "./src/portfolio.js?v=17",
+  "./src/settings.js?v=17",
+  "./src/sync.js?v=17",
+  "./src/student.js?v=17",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"
