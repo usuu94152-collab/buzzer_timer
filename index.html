@@ -8,54 +8,71 @@
     <meta name="apple-mobile-web-app-title" content="부저 타이머" />
     <title>부저 타이머</title>
     <link rel="manifest" href="./manifest.json" />
-    <link rel="stylesheet" href="./styles.css?v=15" />
+    <link rel="stylesheet" href="./styles.css?v=16" />
   </head>
   <body>
-    <main class="app" aria-live="polite">
+    <main class="app">
       <section class="timer-panel" data-state="idle">
         <section id="timerView" class="tab-view is-active" role="tabpanel" aria-labelledby="timerTab" data-tab-view="timer">
-          <button id="toggleButton" class="timer-face" type="button" aria-label="타이머 시작 또는 정지">
-            <span class="display-glass" aria-hidden="true"></span>
-            <span id="timeDisplay" class="time-display" aria-label="00:00.00"></span>
-            <span class="cable" aria-hidden="true"></span>
-          </button>
-
-          <div class="timer-meta">
-            <span id="stateBadge" class="state-badge">대기</span>
-            <span id="tapHint" class="tap-hint">부저 또는 Enter로 시작</span>
-          </div>
-
-          <div class="measure-bar">
-            <select id="measureEvent" aria-label="종목 선택"></select>
-            <select id="measureClass" aria-label="반 선택"></select>
-            <button id="measureToggle" class="control-button" type="button">측정 시작</button>
-          </div>
-
-          <div id="measurePanel" class="measure-panel" hidden>
-            <div class="measure-current">
-              <span id="measureCurrentLabel" class="row-label"></span>
-              <strong id="measureCurrentName">-</strong>
-              <span id="measureNextName" class="hint"></span>
+          <!-- 1단계: 측정할 학생을 고른다. 이름을 누르면 2단계 타이머로 넘어간다. -->
+          <div id="pickStep" class="pick-step">
+            <div class="measure-bar">
+              <select id="measureEvent" aria-label="종목 선택"></select>
+              <select id="measureClass" aria-label="반 선택"></select>
             </div>
 
-            <p id="measureTimedHint" class="hint">부저를 누르면 시작, 다시 누르면 이 학생 기록으로 저장하고 다음 학생으로 넘어갑니다.</p>
-
-            <form id="manualForm" class="inline-form" hidden>
-              <input id="manualValue" type="number" step="any" min="0" inputmode="decimal" />
-              <button class="control-button" type="submit">기록 저장</button>
-            </form>
-
-            <div class="measure-actions">
-              <button id="measureBack" class="text-button" type="button">이전 학생</button>
-              <button id="measureSkip" class="text-button" type="button">건너뛰기</button>
+            <div class="pick-head">
+              <p id="pickHint" class="hint">이름을 누르면 타이머가 열립니다.</p>
+              <button id="freeRunButton" class="text-button compact" type="button">학생 없이 재기</button>
             </div>
 
             <ol id="measureQueue" class="queue-list"></ol>
           </div>
 
-          <div class="controls" role="group" aria-label="타이머 조작">
-            <button id="resetButton" class="control-button" type="button">초기화</button>
-            <button id="copyButton" class="control-button" type="button">시간 복사</button>
+          <!-- 2단계: 고른 학생 전용 타이머. 저장해도 이 화면에 그대로 머무른다. -->
+          <div id="timerStep" class="timer-step" hidden>
+            <div class="timer-head">
+              <button id="backToList" class="text-button compact" type="button">← 목록</button>
+              <strong id="measureCurrentName">-</strong>
+              <span id="measureCurrentLabel" class="row-label"></span>
+            </div>
+
+            <button id="toggleButton" class="timer-face" type="button" aria-label="타이머 시작 또는 정지">
+              <span class="display-glass" aria-hidden="true"></span>
+              <span id="timeDisplay" class="time-display" aria-label="00:00.00"></span>
+              <span class="cable" aria-hidden="true"></span>
+            </button>
+
+            <div class="timer-meta">
+              <span id="stateBadge" class="state-badge" aria-live="polite">대기</span>
+              <span id="tapHint" class="tap-hint">부저 또는 Enter로 시작</span>
+            </div>
+
+            <div id="measurePanel" class="measure-panel">
+              <p id="measureTimedHint" class="hint">부저를 누르면 시작, 다시 누르면 이 학생 기록으로 저장됩니다.</p>
+
+              <form id="manualForm" class="inline-form" hidden>
+                <input id="manualValue" type="number" step="any" min="0" inputmode="decimal" />
+                <button class="control-button" type="submit">기록 저장</button>
+              </form>
+
+              <div class="section-title">
+                <h2>시기</h2>
+                <span id="attemptCount" class="row-label"></span>
+              </div>
+
+              <ol id="attemptList" class="data-list compact-list"></ol>
+
+              <div class="measure-actions">
+                <button id="measureBack" class="text-button" type="button">← 이전 학생</button>
+                <button id="measureSkip" class="text-button" type="button">다음 학생 →</button>
+              </div>
+            </div>
+
+            <div class="controls" role="group" aria-label="타이머 조작">
+              <button id="resetButton" class="control-button" type="button">초기화</button>
+              <button id="copyButton" class="control-button" type="button">시간 복사</button>
+            </div>
           </div>
         </section>
 
@@ -189,6 +206,6 @@
       </section>
     </main>
 
-    <script type="module" src="./app.js?v=6"></script>
+    <script type="module" src="./app.js?v=7"></script>
   </body>
 </html>
