@@ -1,6 +1,6 @@
 import { formatElapsed } from "./src/format.js";
 import { initRoster, render as renderRoster } from "./src/roster.js";
-import { initMeasure, render as renderMeasure, canRecordElapsed, isMeasureActive, recordElapsed } from "./src/measure.js";
+import { initMeasure, render as renderMeasure, canRecordElapsed, isMeasureActive, isTimerStep, recordElapsed } from "./src/measure.js";
 import { initPortfolio, render as renderPortfolio } from "./src/portfolio.js";
 import { initSettings, render as renderSettings } from "./src/settings.js";
 import { initSync } from "./src/sync.js";
@@ -299,8 +299,9 @@ function playTone(frequency, durationSeconds) {
 }
 
 // 명렬 입력 중 Enter 는 폼 제출이어야 한다. 부저는 타이머 화면에서만 받는다.
+// 학생을 고르는 목록 단계에서도 막는다. 그러지 않으면 안 보이는 타이머가 돌아간다.
 function onKeyDown(event) {
-  if (event.key !== "Enter" || state.activeTab !== "timer") {
+  if (event.key !== "Enter" || state.activeTab !== "timer" || !isTimerStep()) {
     return;
   }
 
@@ -366,7 +367,8 @@ document.addEventListener("keydown", submitFormOnEnter);
 document.addEventListener("click", releaseFocusAfterPointerClick);
 
 initRoster();
-initMeasure();
+// 다른 학생을 고르면 앞 학생의 시간이 남아 있으면 안 된다.
+initMeasure({ onStudentChange: resetTimer });
 initPortfolio();
 initSettings();
 initSync();

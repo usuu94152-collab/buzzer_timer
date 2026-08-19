@@ -593,14 +593,25 @@ textarea {
   margin-bottom: 12px;
 }
 
-/* --- 측정 --- */
+/* --- 측정 1단계: 학생 고르기 --- */
+
+.pick-step,
+.timer-step {
+  display: grid;
+  gap: 14px;
+  width: min(860px, 100%);
+}
+
+.timer-step {
+  justify-items: center;
+}
 
 .measure-bar {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
-  width: min(860px, 100%);
+  width: 100%;
 }
 
 .measure-bar select {
@@ -608,81 +619,131 @@ textarea {
   max-width: 260px;
 }
 
-#measureToggle.is-active {
-  border-color: rgba(255, 38, 48, 0.58);
-  color: var(--led);
-}
-
-.measure-panel {
-  display: grid;
-  gap: 10px;
-  width: min(860px, 100%);
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-}
-
-.measure-current {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.measure-current strong {
-  font-size: 1.6rem;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-.measure-actions {
+.pick-head {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .queue-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 6px;
-  max-height: 260px;
+  /* 목록이 이제 주 화면이다. 한 반이 다 보이도록 넉넉히 두되 넘치면 스크롤한다. */
+  max-height: 62svh;
   overflow-y: auto;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+.queue-list li {
+  display: grid;
+}
+
+/* 이름을 누르는 것이 이 화면의 유일한 동작이라 진짜 버튼이어야 한다. */
 .queue-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 12px;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--surface-2);
+  color: var(--text);
   cursor: pointer;
+  text-align: left;
   font-variant-numeric: tabular-nums;
+  touch-action: manipulation;
+}
+
+.queue-row:hover {
+  border-color: rgba(255, 38, 48, 0.58);
 }
 
 .queue-row strong {
+  font-size: 1.05rem;
   font-weight: 800;
 }
 
 .queue-row.is-done {
   color: var(--muted);
-}
-
-.queue-row.is-current {
-  border-color: var(--led);
-  background: var(--surface);
-  box-shadow: inset 0 0 0 1px var(--led);
+  border-color: rgba(255, 38, 48, 0.28);
 }
 
 .queue-value {
   margin-left: auto;
   font-weight: 800;
+}
+
+.queue-empty {
+  padding: 14px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* --- 측정 2단계: 고른 학생의 타이머 --- */
+
+.timer-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+}
+
+.timer-head strong {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.timer-head .row-label {
+  margin-left: auto;
+  text-align: right;
+}
+
+.measure-panel {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.measure-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.measure-actions button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.measure-actions button:disabled:hover {
+  border-color: var(--line);
+}
+
+.attempt-row .row-label {
+  min-width: 52px;
+}
+
+.attempt-row strong.is-best {
+  color: var(--led);
+}
+
+.attempt-row button {
+  margin-left: auto;
 }
 
 /* --- 기록·포트폴리오 --- */
