@@ -1,9 +1,9 @@
-import { formatElapsed } from "./src/format.js?v=18";
-import { initRoster, render as renderRoster } from "./src/roster.js?v=18";
-import { initMeasure, render as renderMeasure, canRecordElapsed, isMeasureActive, isTimerStep, recordElapsed } from "./src/measure.js?v=18";
-import { initPortfolio, render as renderPortfolio } from "./src/portfolio.js?v=18";
-import { initSettings, render as renderSettings } from "./src/settings.js?v=18";
-import { initSync } from "./src/sync.js?v=18";
+import { formatElapsed } from "./src/format.js?v=19";
+import { initRoster, render as renderRoster } from "./src/roster.js?v=19";
+import { initMeasure, render as renderMeasure, canRecordElapsed, isMeasureActive, isTimerStep, recordElapsed } from "./src/measure.js?v=19";
+import { initPortfolio, render as renderPortfolio } from "./src/portfolio.js?v=19";
+import { initSettings, render as renderSettings } from "./src/settings.js?v=19";
+import { initSync } from "./src/sync.js?v=19";
 
 const TYPING_TAGS = ["INPUT", "TEXTAREA", "SELECT", "BUTTON"];
 

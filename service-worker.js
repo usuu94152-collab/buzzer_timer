@@ -1,4 +1,4 @@
-const CACHE_NAME = "buzzer-web-timer-v18";
+const CACHE_NAME = "buzzer-web-timer-v19";
 
 // GitHub Pages 는 모든 파일을 Cache-Control: max-age=600 으로 준다.
 // 그래서 파일 이름이 그대로면 배포 후 10 분 동안 브라우저가 옛 파일을 계속 쓴다.
@@ -9,16 +9,16 @@ const ASSETS = [
   "./",
   "./index.html",
   "./student.html",
-  "./styles.css?v=18",
-  "./app.js?v=18",
-  "./src/format.js?v=18",
-  "./src/store.js?v=18",
-  "./src/roster.js?v=18",
-  "./src/measure.js?v=18",
-  "./src/portfolio.js?v=18",
-  "./src/settings.js?v=18",
-  "./src/sync.js?v=18",
-  "./src/student.js?v=18",
+  "./styles.css?v=19",
+  "./app.js?v=19",
+  "./src/format.js?v=19",
+  "./src/store.js?v=19",
+  "./src/roster.js?v=19",
+  "./src/measure.js?v=19",
+  "./src/portfolio.js?v=19",
+  "./src/settings.js?v=19",
+  "./src/sync.js?v=19",
+  "./src/student.js?v=19",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"

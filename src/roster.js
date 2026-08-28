@@ -1,5 +1,5 @@
-import { listStudents, saveStudent, deleteStudent } from "./store.js?v=18";
-import { getConfig } from "./sync.js?v=18";
+import { listStudents, saveStudent, deleteStudent } from "./store.js?v=19";
+import { getConfig, pushInBackground } from "./sync.js?v=19";
 
 const elements = {};
 let editingStudent = null;
@@ -99,6 +99,7 @@ function createRow(student) {
       setEditing(null);
     }
     await render();
+    pushInBackground();
   });
 
   actions.className = "row-actions";
@@ -142,6 +143,8 @@ async function onSubmit(event) {
   setEditing(null);
   elements.classInput.value = classNo;
   await render();
+  // 명렬은 기기 안에만 있으면 기기가 바뀌는 순간 사라진다. 기록과 똑같이 바로 올린다.
+  pushInBackground();
 }
 
 async function onImport() {
@@ -171,6 +174,7 @@ async function onImport() {
   elements.importText.value = "";
   elements.importHint.textContent = `${added}명 추가, ${updated}명 갱신했습니다.`;
   await render();
+  pushInBackground();
 }
 
 export function initRoster() {
