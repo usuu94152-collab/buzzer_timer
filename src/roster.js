@@ -1,5 +1,5 @@
-import { listStudents, saveStudent, deleteStudent } from "./store.js?v=19";
-import { getConfig, pushInBackground } from "./sync.js?v=19";
+import { listStudents, saveStudent, deleteStudent } from "./store.js?v=20";
+import { getConfig, pushInBackground } from "./sync.js?v=20";
 
 const elements = {};
 let editingStudent = null;

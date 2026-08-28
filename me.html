@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="내 기록 측정" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>기록 측정</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./styles.css?v=20" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="timer-panel me-panel" data-state="idle">
+        <!-- 1단계: 코드로 학생을 부른다. 폰 한 대를 돌려쓰므로 여기로 자주 돌아온다. -->
+        <div id="codeStep" class="pick-step">
+          <div class="measure-bar">
+            <select id="eventSelect" aria-label="종목 선택"></select>
+          </div>
+
+          <form id="codeForm" class="code-form">
+            <label class="code-label" for="codeInput">내 코드 6자리</label>
+            <input
+              id="codeInput"
+              class="code-input"
+              type="text"
+              inputmode="latin"
+              autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
+              maxlength="7"
+              placeholder="ABC123"
+            />
+            <button id="codeSubmit" class="control-button" type="submit">시작</button>
+          </form>
+
+          <p id="codeHint" class="hint">선생님께 받은 코드를 입력하세요.</p>
+
+          <div id="recentBox" hidden>
+            <div class="section-title">
+              <h2>방금 잰 학생</h2>
+              <button id="clearRecent" class="text-button compact" type="button">비우기</button>
+            </div>
+            <ol id="recentList" class="queue-list"></ol>
+          </div>
+        </div>
+
+        <!-- 2단계: 이 학생만의 타이머. 저장하면 바로 1단계로 돌아간다. -->
+        <div id="timerStep" class="timer-step" hidden>
+          <div class="timer-head">
+            <button id="backButton" class="text-button compact" type="button">← 다른 학생</button>
+            <strong id="studentName">-</strong>
+            <span id="studentLabel" class="row-label"></span>
+          </div>
+
+          <button id="toggleButton" class="timer-face" type="button" aria-label="타이머 시작 또는 정지">
+            <span class="display-glass" aria-hidden="true"></span>
+            <span id="timeDisplay" class="time-display" aria-label="00:00.00"></span>
+            <span class="cable" aria-hidden="true"></span>
+          </button>
+
+          <div class="timer-meta">
+            <span id="stateBadge" class="state-badge" aria-live="polite">대기</span>
+            <span id="tapHint" class="tap-hint">부저 또는 화면을 누르면 시작</span>
+          </div>
+
+          <div class="measure-panel">
+            <p id="saveHint" class="hint">부저를 누르면 시작, 다시 누르면 내 기록으로 저장됩니다.</p>
+
+            <form id="manualForm" class="inline-form" hidden>
+              <input id="manualValue" type="number" step="any" min="0" inputmode="decimal" />
+              <button class="control-button" type="submit">기록 저장</button>
+            </form>
+
+            <div class="section-title">
+              <h2>내 시기</h2>
+              <span id="attemptCount" class="row-label"></span>
+            </div>
+
+            <ol id="attemptList" class="data-list compact-list"></ol>
+          </div>
+
+          <button id="nextButton" class="control-button next-student" type="button">다음 학생 →</button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/me.js?v=20"></script>
+  </body>
+</html>
