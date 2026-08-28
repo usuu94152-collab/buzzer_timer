@@ -1,5 +1,5 @@
-import { formatValue, parseValueInput, formatDate, UNIT_LABELS } from "./format.js?v=20";
-import { createTimer } from "./timer.js?v=20";
+import { formatValue, parseValueInput, formatDate, UNIT_LABELS } from "./format.js?v=21";
+import { createTimer } from "./timer.js?v=21";
 
 /**
  * 학생용 화면.

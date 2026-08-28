@@ -1,6 +1,6 @@
-import { listEvents, listStudents, listRecords, addRecord, deleteRecord, saveEvent, deleteEvent, bestValue } from "./store.js?v=20";
-import { formatValue, parseValueInput, UNIT_LABELS } from "./format.js?v=20";
-import { pushInBackground } from "./sync.js?v=20";
+import { listEvents, listStudents, listRecords, addRecord, deleteRecord, saveEvent, deleteEvent, bestValue } from "./store.js?v=21";
+import { formatValue, parseValueInput, UNIT_LABELS } from "./format.js?v=21";
+import { pushInBackground } from "./sync.js?v=21";
 
 const EVENT_KEY = "measure.eventId";
 const CLASS_KEY = "measure.classNo";

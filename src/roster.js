@@ -1,5 +1,5 @@
-import { listStudents, saveStudent, deleteStudent } from "./store.js?v=20";
-import { getConfig, pushInBackground } from "./sync.js?v=20";
+import { listStudents, saveStudent, deleteStudent } from "./store.js?v=21";
+import { getConfig, pushInBackground } from "./sync.js?v=21";
 
 const elements = {};
 let editingStudent = null;
@@ -104,7 +104,19 @@ function createRow(student) {
 
   actions.className = "row-actions";
   actions.append(linkButton, editButton, removeButton);
-  item.append(label, name, actions);
+  item.append(label, name);
+
+  // 학생이 me.html 에서 칠 코드다. 시트가 만들어 주므로
+  // "시트에서 명렬 가져오기" 를 한 번 해야 보인다.
+  if (student.code) {
+    const code = document.createElement("span");
+    code.className = "student-code";
+    code.textContent = student.code;
+    code.title = "학생용 코드";
+    item.append(code);
+  }
+
+  item.append(actions);
 
   return item;
 }

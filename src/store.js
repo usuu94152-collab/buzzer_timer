@@ -148,6 +148,9 @@ export async function saveStudent(input) {
     name: String(input.name).trim(),
     token: input.token || createToken(),
     active: input.active !== false,
+    // 코드는 시트가 만든다. 여기서 지우면 명렬 화면에서 코드가 사라져 보인다.
+    // 시트 쪽 code 열은 앱이 건드리지 않으므로 다음 가져오기 때 다시 채워진다.
+    code: input.code || "",
   };
 
   await runTransaction(STUDENTS, "readwrite", (transaction) =>

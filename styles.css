@@ -911,3 +911,16 @@ textarea {
   min-height: 100svh;
   padding: 16px calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
 }
+
+/* 학생이 me.html 에서 칠 코드. 선생님이 불러 주기 쉽게 또렷하게 둔다. */
+.student-code {
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--led);
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}

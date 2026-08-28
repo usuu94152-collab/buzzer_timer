@@ -1,4 +1,4 @@
-import { formatElapsed } from "./format.js?v=20";
+import { formatElapsed } from "./format.js?v=21";
 
 // 7세그먼트 숫자. 어느 획을 켜는지만 적어 두고 나머지는 꺼진 채로 남긴다.
 const DIGIT_SEGMENTS = {
